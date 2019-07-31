@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.fbertos</groupId>
-  <artifactId>spark-example-hive</artifactId>
+  <artifactId>spark-example-impala</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-  <name>spark-example-hive</name>
+  <name>spark-example-impala</name>
   
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -15,32 +15,43 @@
   </properties>
   
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-	<dependency>
-	    <groupId>org.apache.hive</groupId>
-	    <artifactId>hive-jdbc</artifactId>
-	    <version>3.1.1</version>
-	</dependency>    
-	<dependency>
-	    <groupId>org.apache.spark</groupId>
-	    <artifactId>spark-hive_2.12</artifactId>
-	    <version>2.4.3</version>
-	    <scope>provided</scope>
-	</dependency>
-    <dependency>
-      <groupId>org.apache.spark</groupId>
-      <artifactId>spark-core_2.11</artifactId>
-      <version>2.1.0</version>
-      <scope>provided</scope>
-   </dependency>
   </dependencies>
   <build>
     <plugins>
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-dependency-plugin</artifactId>
+		    <executions>
+		        <execution>
+		            <id>copy-dependencies</id>
+		            <phase>prepare-package</phase>
+		            <goals>
+		                <goal>copy-dependencies</goal>
+		            </goals>
+		            <configuration>
+		                <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+		                <overWriteReleases>false</overWriteReleases>
+		                <overWriteSnapshots>false</overWriteSnapshots>
+		                <overWriteIfNewer>true</overWriteIfNewer>
+		            </configuration>
+		        </execution>
+		    </executions>
+		</plugin>
+		
+		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-jar-plugin</artifactId>
+		    <configuration>
+		        <archive>
+		            <manifest>
+		                <addClasspath>true</addClasspath>
+		            </manifest>
+		            <manifestEntries>
+		                <Class-Path>lib/</Class-Path>
+		            </manifestEntries>
+		        </archive>
+		    </configuration>
+		</plugin>    
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
